@@ -2,7 +2,6 @@ import { useGetEventFiltersQuery } from '../../rtk-query/notificationCenter';
 import TypingFilter from '../TypingFilter';
 import { SEVERITY, STATUS } from './constants';
 import { useEffect, useState } from 'react';
-import { useEffect, useState } from 'react';
 
 const useFilterSchema = () => {
   const { data } = useGetEventFiltersQuery();
@@ -56,7 +55,6 @@ const useFilterSchema = () => {
     AUTHOR: {
       value: 'author',
       description: 'Filter by any user or system',
-      values: availableAuthors, // Use the fetched author names
       values: availableAuthors, // Use the fetched author names
     },
 
