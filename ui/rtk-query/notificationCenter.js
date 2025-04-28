@@ -56,6 +56,16 @@ import { api } from './index';
  */
 function parseFilters(filters) {
   return Object.entries(filters).reduce((parsedFilters, [key, value]) => {
+    // Special handling for author values - this ensures they're properly formatted
+    // even if they're arrays with a single value
+    if (key === 'author' && Array.isArray(value)) {
+      // For author filter, we want to join multiple values with a comma
+      // since the backend expects a comma-separated list
+      parsedFilters[key] = value.join(',');
+      return parsedFilters;
+    }
+    
+    // For all other values, continue with existing logic
     if (value || typeof value === 'string') {
       parsedFilters[key] =
         typeof value === 'string'

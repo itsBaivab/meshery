@@ -108,15 +108,26 @@ const TypingFilter = ({ filterSchema, placeholder, handleFilter, defaultFilters 
 
         // If the filter has predefined values, filter them by the search term
         if (schema.values && schema.values.length > 0) {
+          // For author names, make the search case-insensitive and partial match friendly
+          const searchTerm = searchValue.toLowerCase().trim();
           return schema.values
-            .filter((value) => value.toLowerCase().includes(searchValue.toLowerCase().trim()))
+            .filter((value) => value.toLowerCase().includes(searchTerm))
             .map((value) => ({
               type: schemaKey,
               value,
               label: `${schema.value}: ${value}`,
+              // Add avatar info for authors to enable displaying them with avatars
+              ...(schemaKey === 'AUTHOR' && {
+                displayData: {
+                  isAuthor: true,
+                  authorName: value,
+                  // Use a default avatar for Meshery, otherwise a user icon
+                  avatarUrl: value === 'Meshery' ? '/static/img/meshery-logo.png' : null,
+                }
+              })
             }));
         } else {
-          // For custom input filters like AUTHOR
+          // For custom input filters
           const customValue = searchValue.trim();
           if (customValue) {
             return [
@@ -175,9 +186,16 @@ const TypingFilter = ({ filterSchema, placeholder, handleFilter, defaultFilters 
     if (event.key === 'Enter' && inputValue.includes(':')) {
       const [filterType, value] = inputValue.split(':');
       const schemaKey = Object.keys(filterSchema).find(
-        (key) => filterSchema[key].value.toLowerCase() === filterType.toLowerCase(),
+        (key) => filterSchema[key].value.toLowerCase() === filterType.toLowerCase().trim(),
       );
-      if (schemaKey && !filterSchema[schemaKey].values?.length && value.trim()) {
+
+      // If we found a valid filter type and it either has no predefined values or the value is valid
+      if (
+        schemaKey &&
+        value.trim() &&
+        (!filterSchema[schemaKey].values?.length ||
+          filterSchema[schemaKey].values.includes(value.trim()))
+      ) {
         handleSelect({
           type: schemaKey,
           value: value.trim(),
@@ -236,6 +254,55 @@ const TypingFilter = ({ filterSchema, placeholder, handleFilter, defaultFilters 
         }
         renderOption={(props, option, { index }) => {
           const options = getOptions();
+          
+          // Special rendering for author options to include avatar
+          if (option.displayData && option.displayData.isAuthor) {
+            return (
+              <React.Fragment key={option.label}>
+                <li
+                  {...props}
+                  style={{
+                    padding: '0.25rem 1rem',
+                    margin: '0.25rem 0.5rem',
+                    borderRadius: '0.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  {/* Avatar for author - similar to notification card hover */}
+                  <div 
+                    style={{ 
+                      width: '24px', 
+                      height: '24px', 
+                      borderRadius: '50%', 
+                      backgroundColor: '#e0e0e0',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    {option.displayData.avatarUrl ? (
+                      <img 
+                        src={option.displayData.avatarUrl} 
+                        alt={option.displayData.authorName}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <span style={{ fontSize: '14px' }}>
+                        {option.displayData.authorName.charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  {option.label}
+                </li>
+                {index < options.length - 1 && <Divider />}
+              </React.Fragment>
+            );
+          }
+          
+          // Standard rendering for non-author options
           return (
             <React.Fragment key={option.label}>
               <li
