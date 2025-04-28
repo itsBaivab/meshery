@@ -110,7 +110,10 @@ const TypingFilter = ({ filterSchema, placeholder, handleFilter, defaultFilters 
         if (schema.values && schema.values.length > 0) {
           // For author names, make the search case-insensitive and partial match friendly
           const searchTerm = searchValue.toLowerCase().trim();
+          // For author names, make the search case-insensitive and partial match friendly
+          const searchTerm = searchValue.toLowerCase().trim();
           return schema.values
+            .filter((value) => value.toLowerCase().includes(searchTerm))
             .filter((value) => value.toLowerCase().includes(searchTerm))
             .map((value) => ({
               type: schemaKey,
@@ -127,6 +130,7 @@ const TypingFilter = ({ filterSchema, placeholder, handleFilter, defaultFilters 
               }),
             }));
         } else {
+          // For custom input filters
           // For custom input filters
           const customValue = searchValue.trim();
           if (customValue) {
@@ -187,7 +191,16 @@ const TypingFilter = ({ filterSchema, placeholder, handleFilter, defaultFilters 
       const [filterType, value] = inputValue.split(':');
       const schemaKey = Object.keys(filterSchema).find(
         (key) => filterSchema[key].value.toLowerCase() === filterType.toLowerCase().trim(),
+        (key) => filterSchema[key].value.toLowerCase() === filterType.toLowerCase().trim(),
       );
+
+      // If we found a valid filter type and it either has no predefined values or the value is valid
+      if (
+        schemaKey &&
+        value.trim() &&
+        (!filterSchema[schemaKey].values?.length ||
+          filterSchema[schemaKey].values.includes(value.trim()))
+      ) {
 
       // If we found a valid filter type and it either has no predefined values or the value is valid
       if (
