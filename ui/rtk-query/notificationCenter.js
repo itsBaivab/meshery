@@ -64,7 +64,7 @@ function parseFilters(filters) {
       parsedFilters[key] = value.join(',');
       return parsedFilters;
     }
-    
+
     // For all other values, continue with existing logic
     if (value || typeof value === 'string') {
       parsedFilters[key] =

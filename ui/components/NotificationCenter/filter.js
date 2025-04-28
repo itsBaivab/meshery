@@ -12,24 +12,24 @@ const useFilterSchema = () => {
   useEffect(() => {
     // Use the endpoint to fetch events and extract unique authors
     fetch('/api/system/events?page=0&pagesize=100')
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data && data.events) {
           // Extract unique authors from events
           const authors = new Set();
-          data.events.forEach(event => {
+          data.events.forEach((event) => {
             if (event.user_id && event.actor) {
               authors.add(event.actor);
             }
             // Also add "Meshery" for system-generated events
             if (event.system_id) {
-              authors.add("Meshery");
+              authors.add('Meshery');
             }
           });
           setAvailableAuthors([...authors]);
         }
       })
-      .catch(error => console.error('Error fetching authors:', error));
+      .catch((error) => console.error('Error fetching authors:', error));
   }, []);
 
   return {

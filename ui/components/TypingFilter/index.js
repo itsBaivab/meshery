@@ -123,8 +123,8 @@ const TypingFilter = ({ filterSchema, placeholder, handleFilter, defaultFilters 
                   authorName: value,
                   // Use a default avatar for Meshery, otherwise a user icon
                   avatarUrl: value === 'Meshery' ? '/static/img/meshery-logo.png' : null,
-                }
-              })
+                },
+              }),
             }));
         } else {
           // For custom input filters
@@ -254,7 +254,7 @@ const TypingFilter = ({ filterSchema, placeholder, handleFilter, defaultFilters 
         }
         renderOption={(props, option, { index }) => {
           const options = getOptions();
-          
+
           // Special rendering for author options to include avatar
           if (option.displayData && option.displayData.isAuthor) {
             return (
@@ -267,25 +267,25 @@ const TypingFilter = ({ filterSchema, placeholder, handleFilter, defaultFilters 
                     borderRadius: '0.5rem',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px'
+                    gap: '8px',
                   }}
                 >
                   {/* Avatar for author - similar to notification card hover */}
-                  <div 
-                    style={{ 
-                      width: '24px', 
-                      height: '24px', 
-                      borderRadius: '50%', 
+                  <div
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '50%',
                       backgroundColor: '#e0e0e0',
                       overflow: 'hidden',
                       display: 'flex',
                       justifyContent: 'center',
-                      alignItems: 'center'
+                      alignItems: 'center',
                     }}
                   >
                     {option.displayData.avatarUrl ? (
-                      <img 
-                        src={option.displayData.avatarUrl} 
+                      <img
+                        src={option.displayData.avatarUrl}
                         alt={option.displayData.authorName}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
@@ -301,7 +301,7 @@ const TypingFilter = ({ filterSchema, placeholder, handleFilter, defaultFilters 
               </React.Fragment>
             );
           }
-          
+
           // Standard rendering for non-author options
           return (
             <React.Fragment key={option.label}>
